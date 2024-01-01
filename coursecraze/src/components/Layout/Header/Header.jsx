@@ -21,7 +21,7 @@ const user={
 
 
 
-const Header =({isAuthenticated = false,user})=>{
+const Header =({isAuthenticated =true,user})=>{
     const { isOpen, onOpen, onClose } = useDisclosure();
 
 const LogoutHandler=()=>{
@@ -35,7 +35,7 @@ const LogoutHandler=()=>{
             <ColorModeSwitcher toggleMode='dark'/>
             <Button
                 onClick={onOpen}
-                colorScheme={"yellow"} width="12" height={'12'} rounded="full" position="fixed" top="6" left="6">
+                colorScheme={"yellow"} width="12" height={'12'} rounded="full" position="fixed" top="6" left="6" zIndex={"overlay"}>
                 <RiMenu5Fill />
             </Button>
             <Drawer placement='left' onClose={onClose} isOpen={isOpen}>
@@ -80,6 +80,14 @@ const LogoutHandler=()=>{
                                                 <RiLogoutBoxLine />
                                                 Logout
                                             </Button>
+                                            {user && user.role === 'admin' && (
+                        <Link onClick={onClose} to="/admin/dashboard">
+                          <Button colorScheme={'purple'} variant="ghost">
+                            <RiDashboardFill style={{ margin: '4px' }} />
+                            Dashboard
+                          </Button>
+                        </Link>
+                      )}
 
                                         </HStack>
 
