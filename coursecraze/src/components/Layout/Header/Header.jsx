@@ -15,10 +15,6 @@ const LinkButton = ({ url = "/", title = "Home",onClose}) =>
     </Link>
 )
 
-const user={
-    role:'admin',
-};
-
 
 
 const Header =({isAuthenticated =true,user})=>{
@@ -29,6 +25,10 @@ const LogoutHandler=()=>{
     console.log('Logout');
     
 };
+
+user={
+    role:"admin",
+}
 
     return (
         <>
@@ -65,22 +65,22 @@ const LogoutHandler=()=>{
                             onClick={onClose} url="/about" title="About Us" />
 
                             <HStack justifyContent={"space-evenly"} position="absolute" bottom={"2rem"} width="80%">
+                            {isAuthenticated ? (
+                  <>
+                    <VStack>
+                      <HStack>
+                        <Link onClick={onClose} to="/profile">
+                          <Button variant={'ghost'} colorScheme={'yellow'}>
+                            Profile
+                          </Button>
+                        </Link>
+                        <Button variant={'ghost'} onClick={LogoutHandler}>
+                          <RiLogoutBoxLine />
+                          Logout
+                        </Button>
+                      </HStack>
 
-                                {isAuthenticated ? (<>
-
-                                    <VStack>
-
-                                        <HStack>
-                                            <Link onClick={onClose} to="/profile">
-                                                <Button varient={'ghost'} colorScheme={"yellow"}>
-                                                    Profile
-                                                </Button>
-                                            </Link>
-                                            <Button varient={'ghost'} onClick={LogoutHandler}>
-                                                <RiLogoutBoxLine />
-                                                Logout
-                                            </Button>
-                                            {user && user.role === 'admin' && (
+                      {user && user.role === 'admin' && (
                         <Link onClick={onClose} to="/admin/dashboard">
                           <Button colorScheme={'purple'} variant="ghost">
                             <RiDashboardFill style={{ margin: '4px' }} />
@@ -88,36 +88,23 @@ const LogoutHandler=()=>{
                           </Button>
                         </Link>
                       )}
+                    </VStack>
+                  </>
+                ) : (
+                  <>
+                    <Link onClick={onClose} to="/login">
+                      <Button colorScheme={'yellow'}>Login</Button>
+                    </Link>
 
-                                        </HStack>
+                    <p>OR</p>
 
-                                        {user && user.role==='admin' && (
-                                         <Link onClick={onClose} to="/admin/dashboard">
-                                            <Button colorScheme={'purple'} varient="ghost">
-                                      <RiDashboardFill style={{margin:'4px'}} />
-                                      Dashboard
-                                            </Button>
-                                         </Link>
-                                        ) }
-                                    </VStack>
-                                </>) : (<>
-                                    <Link onClick={onClose} to="/login">
-                                        <Button colorScheme={"yellow"}>
-                                            Login     
-                                        </Button>
-                                    </Link>
-
-                                    <p>OR</p>
-
-                                    <Link onClick={onClose} to="/register">
-                                        <Button colorScheme={"yellow"}>
-                                            Sign Up
-                                        </Button>
-                                    </Link>
-
-
-                                </>)}
-
+                    <Link onClick={onClose} to="/register">
+                      <Button colorScheme={'yellow'}>Sign Up</Button>
+                    </Link>
+                  </>
+                )}
+             
+                  
                             </HStack>
 
                             
