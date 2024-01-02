@@ -27,7 +27,7 @@ const Register = () => {
     const[image,setImage]=useState('');
 
 
-    const changeImagehandler=(e)=>{
+  const changeImagehandler=(e)=>{
         const file=e.target.files[0];
         const reader=new FileReader();
         
