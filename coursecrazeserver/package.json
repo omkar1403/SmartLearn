@@ -2,7 +2,7 @@
   "name": "coursecrazeserver",
   "version": "1.0.0",
   "description": "",
-  "type":"module",
+  "type": "module",
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js"

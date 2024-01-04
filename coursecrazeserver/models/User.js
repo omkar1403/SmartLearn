@@ -3,7 +3,7 @@ import validator from "validator";
 
 const schema=new mongoose.Schema({
 
-//Name type, required
+
 name:{
     type:String,
     required:[true,"Please Enter your Name"],
@@ -16,11 +16,6 @@ email:{
 
 },
 
-
-//Email type, required, unique, validate
-
-
-//Password type, required, minLength, select
 password:{
     type:String,
     required:[true,"Please Enter your Password"],
@@ -29,7 +24,7 @@ password:{
     select:false,
 
 },
-//Role type, enum, default
+
 role:{
     type:String,
    enum:["admin","user"],
@@ -39,13 +34,12 @@ role:{
 
 },
 
-//Subscription id, status
 Subscription:{
 id:String ,
 status:String,    
 },
 
-//Avatar public_id, url
+
 
 avatar:{
     public_id:{
@@ -57,7 +51,7 @@ avatar:{
         required:true,
     },
 },
-//Playlist [ courseId,poster ]
+
 
 playlist:[{
     course:{
@@ -68,13 +62,11 @@ playlist:[{
 }],
 
 
-//CreatedAt type, default
 createdAt:{
     type:Date,
     default:Date.now,
 },
-//ResetPasswordToken type
-//ResetPasswordExpire type
+
 
 ResetPasswordToken:String,
 ResetPasswordExpire:String,
