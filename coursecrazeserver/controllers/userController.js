@@ -15,7 +15,7 @@ export const register = catchAsyncError(async (req, res, next) => {
     const file = req.file;
     if (!name || !email || !password || !file)
         return next(new ErrorHandler("Please Enter all fields", 400));
-   
+
 
     let user = await User.findOne({ email });
 
@@ -66,14 +66,20 @@ export const login = catchAsyncError(async (req, res, next) => {
 });
 
 export const logout = catchAsyncError(async (req, res, next) => {
-    res.status(200).cookie("token", null, {
-        expires: new Date(Date.now()),
-    }).json({
+    res
+      .status(200)
+      .cookie("token", null, {
+        // options from the sendtoken must be same as here for deployment
+        expires: new Date(),
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      })
+      .json({
         success: true,
-        message: "Logged Out Successfully",
-
-    })
-})
+        message: "Logged out Succesfully",
+      });
+  });
 
 export const getMyProfile = catchAsyncError(async (req, res, next) => {
     const user = await User.findById(req.user._id);
@@ -250,7 +256,7 @@ export const removefromPlaylist = catchAsyncError(async (req, res, next) => {
 
 
 export const getAllusers = catchAsyncError(async (req, res, next) => {
-     const users=await User.find({});
+    const users = await User.find({});
 
     res.status(200).json({
         success: true,
@@ -261,64 +267,64 @@ export const getAllusers = catchAsyncError(async (req, res, next) => {
 
 
 export const updateuserRole = catchAsyncError(async (req, res, next) => {
-    const user=await User.findById(req.params.id);
-    if(!user) return next(new ErrorHandler("User not found",404));
-   
-    if(user.role==="user") user.role="admin";
-    else user.role="user";
+    const user = await User.findById(req.params.id);
+    if (!user) return next(new ErrorHandler("User not found", 404));
+
+    if (user.role === "user") user.role = "admin";
+    else user.role = "user";
 
     await user.save();
 
-   res.status(200).json({
-       success: true,
-       message:"Role updated",
-   })
+    res.status(200).json({
+        success: true,
+        message: "Role updated",
+    })
 
 });
 
 export const deleteuser = catchAsyncError(async (req, res, next) => {
-    const user=await User.findById(req.params.id);
-    if(!user) return next(new ErrorHandler("User not found",404));
-   
+    const user = await User.findById(req.params.id);
+    if (!user) return next(new ErrorHandler("User not found", 404));
+
     await cloudinary.v2.uploader.destroy(user.avatar.public_id);
 
     //cancel subscription
 
     await User.deleteOne({ _id: req.params.id });
 
-   res.status(200).json({
-       success: true,
-       message:"Deleted",
-   })
+    res.status(200).json({
+        success: true,
+        message: "Deleted",
+    })
 
 });
 
 export const deleteMyProfile = catchAsyncError(async (req, res, next) => {
     const user = await User.findById(req.user._id);
-  
-    await cloudinary.v2.uploader.destroy(user.avatar.public_id);
-  
-    // Cancel Subscription
-  
-    await User.deleteOne({ _id: user.id });
-  
-    res
-      .status(200)
-      .cookie("token", null, {
-        expires: new Date(Date.now()),
-      })
-      .json({
-        success: true,
-        message: "User Deleted Successfully",
-      });
-  });
 
-  User.watch().on("change",async()=>{
-    const stats=await Stats.find({}).sort({createdAt:"desc"}).limit(1);
-    const subscription=await User.find({"subscription.status":"active"});
-    stats[0].users=await User.countDocuments();
-    stats[0].subscription=subscription.length;
-    stats[0].createdAt=new Date(Date.now());
+    await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+
+    // Cancel Subscription
+
+    await User.deleteOne({ _id: user.id });
+
+    res
+        .status(200)
+        .cookie("token", null, {
+            expires: new Date(Date.now()),
+        })
+        .json({
+            success: true,
+            message: "User Deleted Successfully",
+        });
+});
+
+User.watch().on("change", async () => {
+    const stats = await Stats.find({}).sort({ createdAt: "desc" }).limit(1);
+    const subscription = await User.find({ "subscription.status": "active" });
+    stats[0].users = await User.countDocuments();
+    stats[0].subscription = subscription.length;
+    stats[0].createdAt = new Date(Date.now());
     await stats[0].save();
 
-  })
+})
