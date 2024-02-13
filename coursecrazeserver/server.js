@@ -13,16 +13,17 @@ cloudinary.v2.config({
     api_secret: process.env.CLOUDINARY_CLIENT_SECRET,
 });
 
-export const instance = new Razorpay({
-    key_id: process.env.REZORPAY_API_KEY,
-    key_secret: process.env.REZORPAY_API_SECRET,
+export var instance = new Razorpay({
+    key_id: "rzp_test_jshzjKqJTVS46z",
+    key_secret: "Uq7A9pb89o4MXYB6uQykRjoz",
 })
 
 
-NodeCron.schedule("0 0 0 1 * *",async()=>{
-    try{
+
+NodeCron.schedule("0 0 0 1 * *", async () => {
+    try {
         await Stats.create({});
-    }catch(error){
+    } catch (error) {
         console.log(error);
     }
 

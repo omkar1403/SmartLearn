@@ -1,42 +1,77 @@
 import { Avatar, Button, Container, HStack, Heading, Stack, VStack, Text, Image,Modal, ModalOverlay, ModalContent, ModalCloseButton, ModalBody,Input, ModalHeader, ModalFooter, useDisclosure } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { RiDeleteBin7Fill } from 'react-icons/ri'
 import { Link } from 'react-router-dom'
 import { fileuploadCSS } from '../Auth/Register'
+import { useDispatch, useSelector } from 'react-redux'
+import { removeFromPlaylist, updateProfilePicture } from '../../redux/actions/profile'
+import { cancelSubscription, loadUser } from '../../redux/actions/user'
+import toast from 'react-hot-toast'
 
-const Profile = () => {
-    const user = {
-        name: "Omkar Deshmukh",
-        email: "omkar@gmail.com",
-        createdAt: String(new Date().toISOString()),
-        role: "user",
-        subscription: {
-            status: "active"
-        },
-        playlist: [{
-            course: "science", poster: "https://th.bing.com/th/id/OIP.iAhcp6m_91O-ClK79h8EQQHaFj?rs=1&pid=ImgDetMain",
+const Profile = ({user}) => {
+  const { loading, message, error } = useSelector(state => state.profile);
+  
+  const {
+    loading: subscriptionLoading,
+    message: subscriptionMessage,
+    error: subscriptionError,
+  } = useSelector(state => state.subscription);
 
-        }
-        ]
-    }
+  
+  const removeFromPlaylistHandler = async id => {
+    await dispatch(removeFromPlaylist(id));
+    dispatch(loadUser());
+  };
+
 
     const {isOpen,onClose,onOpen}=useDisclosure();
-
-    const removeFromPlaylistHandler = id => {
-        console.log(id);
-    }
-
-    const changeImageSubmitHandler=(e,image)=>{
+    
+   
+   
+    const dispatch=useDispatch();
+    const changeImageSubmitHandler=async (e,image)=>{
         e.preventDefault();
-        
+        const myForm=new FormData();
+        myForm.append('file',image);
+       await dispatch(updateProfilePicture(myForm));
+      dispatch(loadUser());
     }
+
+    const cancelSubscriptionHandler = () => {
+      dispatch(cancelSubscription());
+    };
+  
+    
+    useEffect(() => {
+      if (error) {
+        toast.error(error);
+        dispatch({ type: 'clearError' });
+      }
+      if (message) {
+        toast.success(message);
+        dispatch({ type: 'clearMessage' });
+      }
+      if (subscriptionMessage) {
+        toast.success(subscriptionMessage);
+        dispatch({ type: 'clearMessage' });
+        dispatch(loadUser());
+      }
+  
+      if (subscriptionError) {
+        toast.error(subscriptionError);
+        dispatch({ type: 'clearError' });
+      }
+
+    }, [dispatch, error, message,subscriptionError, subscriptionMessage]);
+
+  
 
     return (
         <Container minH={'95vh'} maxW={'container.lg'} py="8" >
             <Heading children="Profile" m="8" textTransform={'uppercase'} />
             <Stack justifyContent={'flex-start'} direction={['column', 'row']} alignItems={'center'} spacing={['8', '16']} padding={'8'}>
                 <VStack>
-                    <Avatar boxSize={'48'} />
+                    <Avatar boxSize={'48'} src={user.avatar.url}/>
                     <Button onClick={onOpen} colorScheme='yellow' varient='ghost'>
                         Change Profile
                     </Button>
@@ -55,11 +90,10 @@ const Profile = () => {
                         <Text children="CreatedAt" fontWeight={'bold'}></Text>
                         <Text children={user.createdAt.split("T")[0]}></Text>
                     </HStack>
-                 
-                        {user.role !== "admin" && (<HStack>
+                     {user.role !== "admin" && (<HStack>
                             <Text children="Subscription" fontWeight={'bold'} />
-                            {user.subscription.status === "active" ? (
-                                <Button color={'yellow.500'} variant="unstyled">Cancel Subscription</Button>
+                            {user.subscription && user.subscription.status === "active" ? (
+                                <Button isLoading={subscriptionLoading} onClick={cancelSubscriptionHandler} color={'yellow.500'} variant="unstyled">Cancel Subscription</Button>
                             ) : (<Link to="/subscribe">
                                 <Button colorScheme='yellow'>Subscribe</Button></Link>
                             )}
@@ -95,7 +129,7 @@ const Profile = () => {
                                             <Button variant={'ghost'} colorScheme='yellow'> watch Now</Button>
                                         </Link>
 
-                                        <Button onClick={() => removeFromPlaylistHandler(element.course)}><RiDeleteBin7Fill /></Button>
+                                        <Button isLoading={loading} onClick={() => removeFromPlaylistHandler(element.course)}><RiDeleteBin7Fill /></Button>
                                     </HStack>
                                 </VStack>
                             ))
@@ -104,7 +138,7 @@ const Profile = () => {
                 )
             }
 
-<ChangePhotoBox changeImageSubmitHandler={changeImageSubmitHandler} isOpen={isOpen} onClose={onClose}/>
+<ChangePhotoBox changeImageSubmitHandler={changeImageSubmitHandler} isOpen={isOpen} onClose={onClose} loading={loading}/>
 
 
         </Container>

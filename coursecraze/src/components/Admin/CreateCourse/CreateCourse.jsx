@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import cursor from '../../../images/cursor.png'
 import Sidebar from '../Sidebar'
 import { fileuploadCSS } from '../../Auth/Register'
+import { createCourse } from '../../../redux/actions/admin'
+import { useDispatch, useSelector } from 'react-redux';
 
 
 const CreateCourse = () => {
@@ -26,9 +28,26 @@ const changeImagehandler=e=>{
   }
 }
 
+const dispatch = useDispatch();
+const { loading, error, message } = useSelector(state => state.admin);
+
+
 const categories = [
   'Web Development', 'Artificial Intelligence', 'Data Structure', 'App Development', 'Data Science', 'game Development'
 ];
+
+const submitHandler = e => {
+  e.preventDefault();
+  const myForm = new FormData();
+  myForm.append('title', title);
+  myForm.append('description', description);
+  myForm.append('category', category);
+  myForm.append('createdBy', createdBy);
+  myForm.append('file', image);
+  dispatch(createCourse(myForm));
+};
+
+
 
   return (
     <Grid  css={{
@@ -37,14 +56,14 @@ const categories = [
   
 
   <Container py={'16'} >
-  <form>
+  <form onSubmit={submitHandler}>
 <Heading textTransform={'uppercase'} children={'Create Course'} my={16} textAlign={['center','left']}/>
 <VStack m='auto' spacing={'8'}> 
 <Input
           value={title}
           onChange={e => setTitle(e.target.value)}
           placeholder="Title"
-          type={'email'}
+          type={'text'}
           focusBorderColor="purple.300"
  />
 
@@ -99,7 +118,7 @@ Category
 ) 
 } 
 
-<Button w="full" colorScheme='purple' type='submit' my={'4'}>
+<Button   isLoading={loading} w="full" colorScheme='purple' type='submit' my={'4'}>
   Create
 </Button>
 

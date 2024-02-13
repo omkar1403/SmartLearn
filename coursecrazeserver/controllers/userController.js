@@ -67,19 +67,19 @@ export const login = catchAsyncError(async (req, res, next) => {
 
 export const logout = catchAsyncError(async (req, res, next) => {
     res
-      .status(200)
-      .cookie("token", null, {
-        // options from the sendtoken must be same as here for deployment
-        expires: new Date(),
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-      })
-      .json({
-        success: true,
-        message: "Logged out Succesfully",
-      });
-  });
+        .status(200)
+        .cookie("token", null, {
+            // options from the sendtoken must be same as here for deployment
+            expires: new Date(Date.now()),
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+        })
+        .json({
+            success: true,
+            message: "Logged out Succesfully",
+        });
+});
 
 export const getMyProfile = catchAsyncError(async (req, res, next) => {
     const user = await User.findById(req.user._id);

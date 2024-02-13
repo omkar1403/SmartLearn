@@ -88,15 +88,15 @@ const Header = ({ isAuthenticated = false, user }) => {
                       <HStack>
                         <Link onClick={onClose} to="/profile">
                           <Button variant={'ghost'} colorScheme={'yellow'}>
-                            <RiProfileFill /> Profile
+                            <RiProfileFill/> Profile
                           </Button>
                         </Link>
                         <Button variant={'ghost'} onClick={logoutHandler}>
-                          <RiLogoutBoxLine /> Logout
+                          <RiLogoutBoxLine/> Logout
                         </Button>
                       </HStack>
-                      {user && (
-                        <Link onClick={onClose} to="admin/dashboard">
+                      {user && user.role === 'admin'&& (
+                        <Link onClick={onClose} to="/admin/dashboard">
                           <Button colorScheme={'purple'} variant={'ghost'}>
                             <RiDashboardFill style={{ margin: '4px' }} />{' '}
                             Dashboard

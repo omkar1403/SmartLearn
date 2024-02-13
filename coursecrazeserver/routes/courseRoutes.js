@@ -14,7 +14,7 @@ router.route("/createcourse").post(isAuthenticated, isAuthorizeAdmin, singleuplo
 
 //Add lectures,delete Course, Get course Details
 
-router.route("/course/:id").get(isAuthenticated,isAuthorizeSubscribes,getCourseLectures).post(isAuthenticated, isAuthorizeAdmin, singleupload, addLecture).delete(isAuthenticated, isAuthorizeAdmin, deleteCourse);
+router.route("/course/:id").get(isAuthenticated,getCourseLectures).post(isAuthenticated, isAuthorizeAdmin, singleupload, addLecture).delete(isAuthenticated, isAuthorizeAdmin, deleteCourse);
 
 router.route("/lectures").delete(isAuthenticated, isAuthorizeAdmin, deleteLecture);
 
