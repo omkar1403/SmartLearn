@@ -22,41 +22,71 @@ import cursor from '../../../images/cursor.png'
 import Sidebar from '../Sidebar'
 import CourseModal from './CourseModal';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  getAllCourses,
+  getCourseLectures,
+} from '../../../redux/actions/course';
+import { addLecture, deleteCourse, deleteLecture } from '../../../redux/actions/admin';
+import toast from 'react-hot-toast';
+
 
 const AdminCourses = () => {
-const courses=[{
-_id:'ajakkaka',
-title:'React course',
-category:'Web Development',
-poster:{
-  url:'https://www.bing.com/images/search?view=detailV2&ccid=Bs8YUQLV&id=0DAE6CE20681A68B742EC7410A12D51B1F74644F&thid=OIP.Bs8YUQLV-ps3iDsJ9GnWpwHaE8&mediaurl=https%3a%2f%2fwww.u-run.fr%2fwp-content%2fuploads%2f2017%2f04%2frbkFIT_SS17_Gorge-1300.jpg&exph=4912&expw=7360&q=image+course&simid=608020340139764292&FORM=IRPRST&ck=7CF4A94D3E1FB24F1D113632C2C7DC36&selectedIndex=1&itb=0'
-},
-createdBy:'Omkar Deshmukh',
-views:123,
-numOfVideos:12,
 
-}];
+  const { courses,lectures} = useSelector(state => state.course);
+  
+  const { loading, error, message } = useSelector(state => state.admin);
+
+  const [courseId, setCourseId] = useState('');
+  const [courseTitle, setCourseTitle] = useState('');
 
 
+  const dispatch = useDispatch();
 
-const coureDetailsHandler=(courseId,title)=>{
-  onOpen();
-};
-const deleteButtonHandler=courseId=>{
-  console.log(courseId);
-};
+  const coureDetailsHandler = (courseId, title) => {
+    dispatch(getCourseLectures(courseId));
+    onOpen();
+    setCourseId(courseId);
+    setCourseTitle(title);
 
-const addLectureHandler=(e,courseId,description,video)=>{
-e.preventDefault();
-};
+  };
+  const deleteButtonHandler = courseId => {
+    dispatch(deleteCourse(courseId));
+  };
+
+  const addLectureHandler = async (e, courseId,title, description, video) => {
+    e.preventDefault();
+    const myForm = new FormData();
+
+    myForm.append('title', title);
+    myForm.append('description', description);
+    myForm.append('file', video);
+
+  await dispatch(addLecture(courseId, myForm));
+   dispatch(getCourseLectures(courseId));
+  };
 
 
-const deleteLectureButtonHandler=(courseId,lectureId)=>{
-console.log(courseId);
-console.log(lectureId);
-};
+  const deleteLectureButtonHandler = async (courseId, lectureId) => {
+    await dispatch(deleteLecture(courseId,lectureId));
+    dispatch(getCourseLectures(courseId));
+  };
 
-const {isOpen,onClose,onOpen}=useDisclosure();
+  const { isOpen, onClose, onOpen } = useDisclosure();
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch({ type: 'clearError' });
+    }
+
+    if (message) {
+      toast.success(message);
+      dispatch({ type: 'clearMessage' });
+    }
+
+    dispatch(getAllCourses());
+  }, [dispatch, error, message, onClose]);
 
   return (
     <Grid
@@ -98,7 +128,7 @@ const {isOpen,onClose,onOpen}=useDisclosure();
                   deleteButtonHandler={deleteButtonHandler}
                   key={item._id}
                   item={item}
-                  
+                  loading={loading}
                 />
               ))}
             </Tbody>
@@ -108,12 +138,12 @@ const {isOpen,onClose,onOpen}=useDisclosure();
         <CourseModal
           isOpen={isOpen}
           onClose={onClose}
-          id={"jcjddxjkdk"}
-          courseTitle="React Course"
+          id={courseId}
+          courseTitle={courseTitle}
           deleteButtonHandler={deleteLectureButtonHandler}
           addLectureHandler={addLectureHandler}
-
-          
+          lectures={lectures}
+          loading={loading}
         />
       </Box>
 
@@ -122,7 +152,7 @@ const {isOpen,onClose,onOpen}=useDisclosure();
   );
 };
 
-function Row({ item, coureDetailsHandler, deleteButtonHandler }) {
+function Row({ item, coureDetailsHandler, deleteButtonHandler,loading }) {
   return (
     <Tr>
       <Td>#{item._id}</Td>
@@ -143,7 +173,7 @@ function Row({ item, coureDetailsHandler, deleteButtonHandler }) {
             onClick={() => coureDetailsHandler(item._id, item.title)}
             variant={'outline'}
             color="purple.500"
-            
+            isLoading={loading}
           >
             View Lectures
           </Button>
@@ -151,7 +181,7 @@ function Row({ item, coureDetailsHandler, deleteButtonHandler }) {
           <Button
             onClick={() => deleteButtonHandler(item._id)}
             color={'purple.600'}
-            
+            isLoading={loading}
           >
             <RiDeleteBin7Fill />
           </Button>

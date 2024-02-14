@@ -15,27 +15,45 @@ import React, { useEffect } from 'react';
 import { RiDeleteBin7Fill } from 'react-icons/ri';
 import cursor from '../../../images/cursor.png'
 import Sidebar from '../Sidebar'
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  deleteUser,
+  getAllUsers,
+  updateUserRole,
+} from '../../../redux/actions/admin';
+import toast from 'react-hot-toast';
+
+
 
 const Users = () => {
 
-const users=[{
-  _id:"abcde",
-  name:"omkar",
-  role:"admin",
-  subscription:{
-    status:"active"
-  },
-  email:"omkardeshmukh@gmail.com"
+const { users, loading, error, message } = useSelector(state => state.admin);
 
-}]
+
+const dispatch = useDispatch();
+
 
 const updateHandler=userId=>{
-console.log(userId);
+  dispatch(updateUserRole(userId));
 }
 
 const deleteButtonHandler=userId=>{
-  console.log(userId);
+  dispatch(deleteUser(userId));
   }
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch({ type: 'clearError' });
+    }
+
+    if (message) {
+      toast.success(message);
+      dispatch({ type: 'clearMessage' });
+    }
+
+    dispatch(getAllUsers());
+  }, [dispatch, error, message]);
 
   return (
     <Grid  css={{
@@ -66,8 +84,15 @@ const deleteButtonHandler=userId=>{
             </Thead>
 
             <Tbody>
-              {users.map(item => (
-                  <Row updateHandler={updateHandler} deleteButtonHandler={deleteButtonHandler} key={item._id} item={item}/>
+              {users &&
+                users.map(item => (
+                  <Row
+                    updateHandler={updateHandler}
+                    deleteButtonHandler={deleteButtonHandler}
+                    key={item._id}
+                    item={item}
+                    loading={loading}
+                  />
                 ))}
             </Tbody>
           </Table>
@@ -81,7 +106,7 @@ const deleteButtonHandler=userId=>{
 
 export default Users;
 
-function Row({ item,updateHandler,deleteButtonHandler}) {
+function Row({ item,updateHandler,deleteButtonHandler,loading}) {
   return (
     <Tr>
       <Td>#{item._id}</Td>
@@ -100,6 +125,7 @@ function Row({ item,updateHandler,deleteButtonHandler}) {
             onClick={()=>updateHandler(item._id)}
             variant={'outline'}
             color="purple.500"
+            isLoading={loading}
            
           >
             Change Role
@@ -108,6 +134,7 @@ function Row({ item,updateHandler,deleteButtonHandler}) {
           <Button
             color={'purple.600'}
             onClick={()=>deleteButtonHandler(item._id)}
+            isLoading={loading}
           >
             <RiDeleteBin7Fill />
           </Button>

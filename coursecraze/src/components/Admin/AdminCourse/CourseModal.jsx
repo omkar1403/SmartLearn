@@ -27,8 +27,8 @@ import {
     deleteButtonHandler,
     addLectureHandler,
     courseTitle,
-    lectures=[1,2,3,4,5,6]
-    
+    lectures=[],
+    loading
     
   }) => {
     const [title, setTitle] = useState('');
@@ -85,13 +85,13 @@ import {
                 lectures.map((item,i)=>(
                    <VideoCard
                    key={i}
-                   title="React intro"
-                   description="This is intro lecture ,where you will know the basic of react"
-                   num={i+1}
-                   lectureId="assjsjnsksj"
+                   title={item.title}
+                   description={item.description}
+                   num={i + 1}
+                   lectureId={item._id}
                    courseId={id}
                    deleteButtonHandler={deleteButtonHandler}
-                   
+                   loading={loading}
                  />
                 ))
               }
@@ -152,6 +152,7 @@ import {
                     w="full"
                     colorScheme={'purple'}
                     type="submit"
+                    isLoading={loading}
                   >
                     Upload
                   </Button>
@@ -179,7 +180,7 @@ import {
     lectureId,
     courseId,
     deleteButtonHandler,
-    
+    loading
   }) {
     return (
       <Stack
@@ -196,9 +197,10 @@ import {
         </Box>
   
         <Button
-        
+          isLoading={loading}
           color={'purple.600'}
           onClick={() => deleteButtonHandler(courseId, lectureId)}
+          
         >
           <RiDeleteBin7Fill />
         </Button>

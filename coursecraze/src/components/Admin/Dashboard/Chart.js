@@ -1,5 +1,5 @@
 import React from 'react';
-import {
+ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
@@ -9,8 +9,11 @@ import {
   Tooltip,
   ArcElement,
   Legend,
+ 
 } from 'chart.js';
-import { Line, Doughnut } from 'react-chartjs-2';
+import { Line} from 'react-chartjs-2';
+
+
 
 ChartJS.register(
   CategoryScale,
@@ -24,6 +27,7 @@ ChartJS.register(
 );
 
 export const LineChart = ({ views = [] }) => {
+  
   const labels = getLastYearMonths();
 
   const options = {
@@ -51,25 +55,13 @@ export const LineChart = ({ views = [] }) => {
     ],
   };
 
-  return <Line options={options} data={data} />;
-};
+  return (
+    
+      <Line options={options} data={data} />
+  
+  );};
 
-export const DoughnutChart = ({ users = [] }) => {
-  const data = {
-    labels: ['Subscribed', 'Not Subscribed'],
-    datasets: [
-      {
-        label: 'Views',
-        data: users,
-        borderColor: ['rgb(62,12,171)', 'rgb(214,43,129)'],
-        backgroundColor: ['rgba(62,12,171,0.3)', 'rgba(214,43,129,0.3)'],
-        borderWidth: 1,
-      },
-    ],
-  };
 
-  return <Doughnut data={data} />;
-};
 
 function getLastYearMonths() {
   const labels = [];

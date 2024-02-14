@@ -11,7 +11,10 @@ import React, { useEffect } from 'react';
 import { RiArrowDownLine, RiArrowUpLine } from 'react-icons/ri';
 import cursor from '../../../images/cursor.png';
 import Sidebar from '../Sidebar';
-import { LineChart } from './Chart';
+import  {LineChart} from './Chart';
+import { useDispatch, useSelector } from 'react-redux';
+import { getDashboardStats } from '../../../redux/actions/admin';
+import Loader from '../../Layout/Loader/Loader';
 
 
 
@@ -55,6 +58,26 @@ const Bar = ({ title, value, profit }) => (
 
 
 const Dashboard = () => {
+  const dispatch = useDispatch();
+
+  const {
+    loading,
+    stats,
+    viewsCount,
+    subscriptionCount,
+    usersCount,
+    subscriptionPercentage,
+    viewsPercentage,
+    usersPercentage,
+    subscriptionProfit,
+    viewsProfit,
+    usersProfit,
+  } = useSelector(state => state.admin);
+
+  useEffect(() => {
+    dispatch(getDashboardStats());
+  }, [dispatch]);
+
   return (
     <Grid
       css={{
@@ -64,12 +87,16 @@ const Dashboard = () => {
       templateColumns={['1fr', '5fr 1fr']}
     >
       
+      {loading || !stats ? (
+        <Loader color="purple.500" />
+      ) : (
         <Box boxSizing="border-box" py="16" px={['4', '0']}>
           <Text
             textAlign={'center'}
             opacity={0.5}
             children={`Last change was on ${
-              String(new Date()).split('G')[0] }`}
+              String(new Date(stats[11].createdAt)).split('G')[0]
+            }`}
           />
 
           <Heading
@@ -84,26 +111,28 @@ const Dashboard = () => {
             minH="24"
             justifyContent={'space-evenly'}
           >
-            <Databox
+             <Databox
               title="Views"
-              qty={123}
-              qtyPercentage={30}
-              profit={true}
+              qty={viewsCount}
+              qtyPercentage={viewsPercentage}
+              profit={viewsProfit}
             />
             <Databox
               title="Users"
-              qty={23}
-              qtyPercentage={76}
-              profit={true}
+              qty={usersCount}
+              qtyPercentage={usersPercentage}
+              profit={usersProfit}
             />
             <Databox
               title="Subscription"
-              qty={12}
-              qtyPercentage={20}
-              profit={false}
+              qty={subscriptionCount}
+              qtyPercentage={subscriptionPercentage}
+              profit={subscriptionProfit}
             />
           </Stack>
-
+       
+ 
+         
           <Grid templateColumns={['1fr', '2fr 1fr']}>
             <Box p="4">
               <Heading
@@ -115,27 +144,27 @@ const Dashboard = () => {
               />
                 <Box>
                 <Bar
-                  profit={true}
+                  profit={viewsProfit}
                   title="Views"
-                  value={30}
+                  value={viewsPercentage}
                 />
                 <Bar
-                  profit={true}
+                  profit={usersProfit}
                   title="Users"
-                  value={100}
+                  value={usersPercentage}
                 />
                 <Bar
-                  profit={false}
+                  profit={subscriptionProfit}
                   title="Subscription"
-                  value={20}
+                  value={subscriptionPercentage}
                 />
               </Box>
             </Box>
-
+       
            
           </Grid>
         </Box>
-      
+      )}
 
       <Sidebar />
     </Grid>
