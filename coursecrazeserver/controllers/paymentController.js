@@ -17,7 +17,7 @@ export const buySubscription = catchAsyncError(async (req, res, next) => {
   const subscription = await instance.subscriptions.create({
     plan_id,
     customer_notify: 1,
-    total_count: 50,
+    total_count: 25,
   });
 
   user.subscription.id = subscription.id;

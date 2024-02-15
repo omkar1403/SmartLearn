@@ -12,13 +12,13 @@ const Footer = () => {
 </VStack>
 
 <HStack spacing={["2","10"]} justifyContent="center" color="white" fontSize="50">
-<a href="https://www.youtube.com/watch?v=R3I7iXShosU" target={'_blank'}>
+<a href="https://www.youtube.com/channel/UCr3aFfYuEYYJXa18HK2HQCA" target={'_blank'}>
  <TiSocialYoutubeCircular />
 </a>
-<a href="https://www.youtube.com/watch?v=R3I7iXShosU" target={'_blank'}>
+<a href="https://www.instagram.com/__omkar__1403/" target={'_blank'}>
  <TiSocialInstagramCircular />
 </a>
-<a href="https://github.com/deshmukhomkar144/Employee-Management" target={'_blank'}>
+<a href="https://github.com/omkar1403" target={'_blank'}>
  <DiGithub/>
 </a>
 </HStack>
