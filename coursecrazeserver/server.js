@@ -13,10 +13,10 @@ cloudinary.v2.config({
     api_secret: process.env.CLOUDINARY_CLIENT_SECRET,
 });
 
-export var instance = new Razorpay({
+export const instance = new Razorpay({
     key_id: "rzp_test_jshzjKqJTVS46z",
     key_secret: "Uq7A9pb89o4MXYB6uQykRjoz",
-})
+  });
 
 
 

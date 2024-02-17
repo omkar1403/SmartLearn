@@ -23,8 +23,7 @@ export const isAuthorizeAdmin=(req,res,next)=>{
 
 
 export const isAuthorizeSubscribes=(req,res,next)=>{
-
-    if(req.user.subscription.status!=="active" && req.user.role!=="admin")
+  if(req.user.subscription.status!=="active" && req.user.role!=="admin")
        return next(new ErrorHandler(`only subscribesrs can access this resourse`,403));
     next();
 }

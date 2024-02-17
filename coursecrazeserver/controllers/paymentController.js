@@ -11,16 +11,19 @@ import { Payment } from "../models/Payment.js";
 export const buySubscription = catchAsyncError(async (req, res, next) => {
   const user = await User.findById(req.user._id);
 
-  if (user.role === "admin") return next(new ErrorHandler("Admin cant Buy subscription", 400));
+  if (user.role === "admin")
+    return next(new ErrorHandler("Admin can't buy subscription", 400));
+
   const plan_id = process.env.PLAN_ID || "plan_Na1EMcTEkiiY4q";
 
   const subscription = await instance.subscriptions.create({
     plan_id,
     customer_notify: 1,
-    total_count: 25,
+    total_count: 12,
   });
 
   user.subscription.id = subscription.id;
+
   user.subscription.status = subscription.status;
 
   await user.save();
