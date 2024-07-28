@@ -8,7 +8,7 @@ config({
     path: "./config/config.env",
 })
 
-const app = express();
+const app = express(); 
 //using middleware
 app.use(express.json());
 app.use(express.urlencoded({

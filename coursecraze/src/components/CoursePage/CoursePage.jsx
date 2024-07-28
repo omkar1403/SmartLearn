@@ -16,7 +16,13 @@ const CoursePage = ({ user }) => {
   useEffect(() => {
     dispatch(getCourseLectures(params.id));
   }, [dispatch, params.id]);
-
+  
+  if (
+    user.role !== 'admin' &&
+    (user.subscription === undefined || user.subscription.status !== 'active')
+  ) {
+    return <Navigate to={'/subscribe'} />;
+  }
 
   return loading ? (
     <Loader />

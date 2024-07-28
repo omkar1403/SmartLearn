@@ -133,7 +133,16 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
             <Route path='/About' element={<About />} />
+            <Route
+              path="/subscribe"
+              element={
+                <ProtectedRoute isAuthenticated={isAuthenticated}>
+                  <Subscribe user={user} />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/subscribe"
               element={

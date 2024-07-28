@@ -1,12 +1,9 @@
 import { catchAsyncError } from "../middlewares/catchAsyncError.js";
 import { User } from "../models/User.js";
 import ErrorHandler from "../utils/errorHandler.js";
-import { instance } from "../server.js"
+import { instance } from "../server.js";
 import crypto from "crypto";
 import { Payment } from "../models/Payment.js";
-
-
-
 
 export const buySubscription = catchAsyncError(async (req, res, next) => {
   const user = await User.findById(req.user._id);
@@ -68,14 +65,12 @@ export const paymentVerification = catchAsyncError(async (req, res, next) => {
   );
 });
 
-
 export const getRazorPayKey = catchAsyncError(async (req, res, next) => {
   res.status(200).json({
     success: true,
     key: process.env.RAZORPAY_API_KEY,
   });
 });
-
 
 export const cancelSubscription = catchAsyncError(async (req, res, next) => {
   const user = await User.findById(req.user._id);

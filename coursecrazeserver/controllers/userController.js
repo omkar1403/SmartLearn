@@ -52,7 +52,6 @@ export const login = catchAsyncError(async (req, res, next) => {
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) return next(new ErrorHandler("Incorrect Email or Password", 401));
-
     //upload file on cloudinary
 
     const isMatch = await user.comparePassword(password);
@@ -188,7 +187,7 @@ export const resetPassword = catchAsyncError(async (req, res, next) => {
 
     if (!user)
         return next(new ErrorHandler("Token is invalid or has been expired", 401));
-
+    
     user.password = req.body.password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
@@ -317,7 +316,7 @@ export const deleteMyProfile = catchAsyncError(async (req, res, next) => {
             success: true,
             message: "User Deleted Successfully",
         });
-});
+});            
 
 User.watch().on("change", async () => {
     const stats = await Stats.find({}).sort({ createdAt: "desc" }).limit(1);

@@ -54,7 +54,7 @@ const Subscribe = ({ user }) => {
             contact: '',
           },
           notes: {
-            address: 'Adii and Team',
+            address: 'Omkar and Team',
           },
           theme: {
             color: '#FFC800',
